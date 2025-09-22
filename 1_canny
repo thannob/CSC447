@@ -1,0 +1,9 @@
+import cv2
+img = cv2.imread('./image/lena.jpg',0)
+edges = cv2.Canny(img,100,150)
+edges2 = cv2.Canny(img,100,150,L2gradient=True)
+cv2.imshow('Edges', edges)
+cv2.imshow('Edges2', edges2)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+cv2.waitKey(1)
