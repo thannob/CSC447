@@ -5,7 +5,7 @@ import numpy as np
 
 img_rgb = cv2.imread('./image/coca-cola.jpg')
 img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-template = cv2.imread('./image/cola.jpg', 0)
+template = cv2.imread('./image/cola.jpeg', 0)
 w, h = template.shape[::-1]
 
 res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
@@ -20,3 +20,5 @@ for pt in zip(*loc[::-1]):
 # cv2.imwrite('res.png', img_rgb)
 cv2.imshow("result", img_rgb)
 cv2.waitKey(0)
+cv2.destroyAllWindows()
+cv2.waitKey(1) # for Mac
