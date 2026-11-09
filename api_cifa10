@@ -1,0 +1,49 @@
+from flask import Flask, request
+import joblib
+import numpy as np
+from PIL import Image
+from keras.models import load_model
+
+class_names =['airplane','automobile','bird','cat','deer',
+              'dog','frog','horse','ship','truck']
+cifar10_model = load_model('final_model.keras')
+
+app = Flask(__name__)
+
+@app.route('/cifar10', methods=['POST'])
+def cifar():
+    image_upload = request.files["image"]
+    img = Image.open(image_upload).convert('RGB').resize((32,32))
+    img = np.array(img)
+    print(img.shape)
+    img = img.reshape(1,32,32,3)
+    img = img.astype('float32')
+    img = img/255
+    output = cifar10_model.predict(img)
+    print(np.argmax(output))
+    return { 'output': class_names[int((np.argmax(output)))] }
+
+@app.route('/iris', methods=['POST'])
+def iris():
+    class_names = ['Setosa','Vericolor','Virginica']
+    model = joblib.load('iris.model')
+    req = request.values['param'] # 5.1, 2, 1, 3
+    inputs = np.array(req.split(','),dtype=np.float32).reshape(1,-1)
+    print(inputs)
+    output = model.predict(inputs)
+    print(int(output[0]))
+    return { 'output': class_names[int(output[0])]}
+        
+
+@app.route('/')
+def helloworld():
+    return { 'text':'Hello' }
+
+@app.route('/area', methods=['GET'])
+def area():
+    w = float(request.values['w'])
+    h = float(request.values['h'])
+    return { 'area': w*h }
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5001, debug=False)
